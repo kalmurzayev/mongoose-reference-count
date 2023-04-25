@@ -1,7 +1,12 @@
 mongoose-reference-count
 ========================
 
-This mongoose plugin allows to keep track of number of references to a particular object in certain collection.
+This Mongoose plugin allows keeping track of the number of references to a particular object in a certain collection. It is useful when you need to know how many times an object is used or referenced, such as when deleting an object that is referenced by other documents in the collection.
+
+The second section demonstrates how to query a collection using Mongoose's "findOne" method, specifying certain criteria to locate a specific document in the collection. This is a fundamental operation when working with MongoDB, and Mongoose's query-building tools make it easier to write and execute queries in a more structured and organized manner. Following the execution of the query, the results are logged to the console, and additional work can be performed within the callback function. 
+
+Overall, this code is helpful for developers building Node.js applications that use MongoDB as their primary data store and want to use the Mongoose library to simplify the process of working with MongoDB. The code examples demonstrate how to use some of the key features of Mongoose, including schema creation, query building, and plugin support, which are all necessary for building robust and scalable applications.
+
 
 ## Usage
 
@@ -50,3 +55,20 @@ The following will be printed
 
 # TODO
 - add reference count when object is retrieved with find() method along with other objects.
+
+
+# An example of customizing the "mongoose-reference-count" plugin:
+```javascript
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var referenceCount = function (schema, options) {
+    // Create a virtual property in the schema to track references.
+    schema.virtual('refCount').get(function () {
+        // Obtain the referenced collection's model.
+        var RefModel = mongoose.model(options.refModel);
+        // Return the number of references this document has in the referenced collection.
+        return RefModel.countDocuments({[options.field]: this._id});
+    });
+};
+```
